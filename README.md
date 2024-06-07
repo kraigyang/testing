@@ -1,3 +1,33 @@
+# JenkisCI镜像dockerfile
+
+# 基于现有的 Jenkins 镜像
+FROM henshing/jenkins_saved:v3
+
+# 切换到 root 用户
+USER root
+
+# 生成自定义启动脚本
+RUN  echo """
+#!/bin/bash
+
+# 启动 Jenkins
+exec java -jar /usr/share/jenkins/jenkins.war
+""" > jenkins.sh
+
+# 将自定义启动脚本复制到容器内
+COPY jenkins.sh /usr/local/bin/jenkins.sh
+
+# 确保启动脚本具有执行权限
+RUN chmod +x /usr/local/bin/jenkins.sh
+
+# 切换回 Jenkins 用户
+USER jenkins
+
+# 设置启动命令
+ENTRYPOINT ["/usr/local/bin/jenkins.sh"]
+
+
+
 # v1.0仓库位置
 https://github.com/buhenxihuan/Starry
 
